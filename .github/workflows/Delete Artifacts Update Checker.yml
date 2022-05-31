@@ -21,7 +21,7 @@ jobs:
   Checka:
     runs-on: ubuntu-20.04
     env:
-      REPO_URL: https://github.com/coolsnowwolf/lede
+      REPO_URL: https://github.com/Tao173/Auto-Update-Router
       REPO_BRANCH: master
       TZ: Asia/Shanghai
     steps:
