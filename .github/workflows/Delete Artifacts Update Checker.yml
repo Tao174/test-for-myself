@@ -1,0 +1,115 @@
+#===============================================
+#   - name: Setup Debug Session
+#     uses: csexton/debugger-action@master
+#===============================================
+
+name: Delete Artifacts Update Checker
+
+on:
+  #release:
+  #  types: published
+  schedule:
+    - cron: 20 0/1 * * * 
+  workflow_dispatch:
+    inputs:
+      SSH:
+        description: 'SSH connection to Actions?'
+        required: false
+        default: 'false'   
+
+jobs:
+  Checka:
+    runs-on: ubuntu-20.04
+    env:
+      REPO_URL: https://github.com/coolsnowwolf/lede
+      REPO_BRANCH: master
+      TZ: Asia/Shanghai
+    steps:
+    - name: Get Commit Hash
+      id: getHash
+      run: |
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH ./c
+        cd c
+        echo "::set-output name=commitHasha::$(git rev-parse HEAD)"
+    - name: Compare Commit Hash
+      id: cacheHash
+      uses: actions/cache@v2
+      with:
+        path: .commitHasha
+        key: HEAD-${{ steps.getHash.outputs.commitHasha }}
+
+    - name: Save New Commit Hash
+      if: steps.cacheHash.outputs.cache-hit != 'true'
+      run: |
+        echo ${{ steps.getHash.outputs.commitHash }} | tee .commitHash
+    - name: Trigger build
+      if: steps.cacheHash.outputs.cache-hit != 'true'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
+        event-type: lede Source Code Update
+
+# /////////////////////////////////////////////////////////////////////////////////////////////////////////        
+  Checkb:
+    runs-on: ubuntu-20.04
+    env:
+      REPO_URL: https://github.com/Lienol/openwrt
+      REPO_BRANCH: 21.02
+      TZ: Asia/Shanghai
+    steps:
+    - name: Get Commit Hash
+      id: getHash
+      run: |
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH ./b
+        cd b
+        echo "::set-output name=commitHashb::$(git rev-parse HEAD)"
+    - name: Compare Commit Hash
+      id: cacheHash
+      uses: actions/cache@v2
+      with:
+        path: .commitHash
+        key: HEAD-${{ steps.getHash.outputs.commitHashb }}
+
+    - name: Save New Commit Hash
+      if: steps.cacheHash.outputs.cache-hit != 'true'
+      run: |
+        echo ${{ steps.getHash.outputs.commitHashb }} | tee .commitHash
+    - name: Trigger build
+      if: steps.cacheHash.outputs.cache-hit != 'true'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
+        event-type: Lienol Source Code Update
+
+# /////////////////////////////////////////////////////////////////////////////////////////////////////////        
+  Checkc:
+    runs-on: ubuntu-20.04
+    env:
+      REPO_URL: https://github.com/immortalwrt/immortalwrt
+      REPO_BRANCH: openwrt-21.02
+      TZ: Asia/Shanghai
+    steps:
+    - name: Get Commit Hash
+      id: getHash
+      run: |
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH ./c
+        cd c
+        echo "::set-output name=commitHashc::$(git rev-parse HEAD)"
+    - name: Compare Commit Hash
+      id: cacheHash
+      uses: actions/cache@v2
+      with:
+        path: .commitHash
+        key: HEAD-${{ steps.getHash.outputs.commitHashc }}
+
+    - name: Save New Commit Hash
+      if: steps.cacheHash.outputs.cache-hit != 'true'
+      run: |
+        echo ${{ steps.getHash.outputs.commitHashc }} | tee .commitHash
+    - name: Trigger build
+      if: steps.cacheHash.outputs.cache-hit != 'true'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
+        event-type: immortalwrt Source Code Update
+
