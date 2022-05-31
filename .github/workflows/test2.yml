@@ -1,4 +1,4 @@
-name: Delete Artifacts Update Checker
+name: im
 
 on:
   #release:
