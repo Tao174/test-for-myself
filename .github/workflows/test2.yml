@@ -10,9 +10,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
-
+    env:
+      TZ: Asia/Shanghai
     steps:
     - name: Checkout
-      uses: actions/checkout@main        
-    - name: Setup Debug Session 'touch /tmp/keepalivegit'
+      uses: actions/checkout@v3
+      with:
+        path: main
+    
+    - name: Checkout private tools
+      uses: actions/checkout@v3
+      with:
+        repository: Tao173/ESP-HA
+        token: ${{ secrets.ACTIONS_TRIGGER_PAT }} 
+        path: my-tools      
+    - name: Setup Debug Session  
       uses: csexton/debugger-action@master
