@@ -3,7 +3,7 @@
 #     uses: csexton/debugger-action@master
 #===============================================
 
-name: AAAAAAAAAAAAA
+name: published
 
 on:
   #release:
