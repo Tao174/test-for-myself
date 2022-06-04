@@ -21,28 +21,18 @@ jobs:
     env:
       TZ: Asia/Shanghai
     steps:
-    - name: Get Commit Hash
-      id: getHash
-      run: |
-        git clone --depth 1 ${{ matrix.url }
-        echo "::set-output name=commitHash::$(git rev-parse HEAD)"
-    - name: Compare Commit Hash
-      id: cacheHash
-      uses: actions/cache@v2
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        path: .commitHash
-        key: HEAD-${{ steps.getHash.outputs.commitHash }}
-
-    - name: Save New Commit Hash
-      if: steps.cacheHash.outputs.cache-hit != 'true'
-      run: |
-        echo ${{ steps.getHash.outputs.commitHash }} | tee .commitHash
-    - name: Trigger build
-      if: steps.cacheHash.outputs.cache-hit != 'true'
-      uses: peter-evans/repository-dispatch@v1
+        path: main
+    
+    - name: Checkout private tools
+      uses: actions/checkout@v3
       with:
-        token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
-        event-type: AAAAAAAAAA
-
+        repository: Tao173/ESP-HA
+        token: ${{ secrets.ACTIONS_TRIGGER_PAT }} 
+        path: my-tools      
+    - name: Setup Debug Session  
+      uses: csexton/debugger-action@master
 
 
