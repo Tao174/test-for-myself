@@ -13,14 +13,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  example_matrix:
-    strategy:
-      matrix:
-        url: [https://github.com/breakings/OpenWrt, https://github.com/ophub/kernel, https://github.com/Tao173/Auto-Update-Router]
     runs-on: ubuntu-20.04
     env:
       TZ: Asia/Shanghai
     steps:
+    - name: Commit
+      run: |
+        git config --global --add safe.directory '*'     
     - name: Checkout
       uses: actions/checkout@v3
       with:
